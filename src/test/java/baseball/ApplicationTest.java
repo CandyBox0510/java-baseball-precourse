@@ -1,7 +1,10 @@
 package baseball;
 
 import camp.nextstep.edu.missionutils.test.NsTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static camp.nextstep.edu.missionutils.test.Assertions.assertRandomNumberInRangeTest;
 import static camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest;
@@ -31,5 +34,12 @@ class ApplicationTest extends NsTest {
     @Override
     public void runMain() {
         Application.main(new String[]{});
+    }
+
+    @Test
+    @DisplayName( "생성 문제 유효성 체크" )
+    void createQuestionTest(){
+        Computer computer = new Computer();
+        assertThat( computer.getQuestion() ).isNotNull().isInstanceOf( List.class ).hasSize( 3 );
     }
 }
