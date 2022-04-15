@@ -172,6 +172,10 @@ public class Computer {
         return question;
     }
 
+    public int getWinCount() {
+        return winCount;
+    }
+
     public boolean isEndGame() {
         return isEndGame;
     }

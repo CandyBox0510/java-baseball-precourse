@@ -10,7 +10,7 @@ public class Application {
     public static void runGame( ){
         Computer computer = new Computer();
         while(!computer.isEndGame()){
-            System.out.printf("숫자를 입력해주세요 : ");
+            System.out.printf("[%d 번째 시도]"+"숫자를 입력해주세요 : ", computer.getWinCount() + 1);
             String userInputNumber = Console.readLine();
             computer.gameStart( userInputNumber );
         }
