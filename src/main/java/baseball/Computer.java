@@ -1,9 +1,11 @@
 package baseball;
 
 import camp.nextstep.edu.missionutils.Randoms;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Computer {
     private List<Integer> question;
@@ -31,6 +33,7 @@ public class Computer {
     }
 
     //문제 번호 추가
+    @Test
     private void addNumber(int randomNumber){
         boolean isExist = this.question.contains( randomNumber );
         if(!isExist){
@@ -39,6 +42,9 @@ public class Computer {
     }
 
     //게임 시작
+    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"123", "456", "158", "가나다"})
     public void gameStart(String inputNumber){
         boolean isValid = this.validation(inputNumber);
         if(isValid){
@@ -48,9 +54,20 @@ public class Computer {
     }
 
     //유효성 검사
+    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"123", "456", "158", "가나다"})
     private boolean validation(String inputNumber){
         this.checkStringSizeThree( inputNumber );
-        return this.oneToNineNumber( inputNumber );
+        if(this.hasNotOneToNineNumber(inputNumber)){
+            return false;
+        }
+
+        if(this.hasDuplicateNumber( inputNumber )){
+            return false;
+        }
+
+        return true;
     }
 
     //3자리 체크
@@ -61,23 +78,44 @@ public class Computer {
     }
 
     //1~9까지의 숫자 체크
-    private boolean oneToNineNumber(String inputNumber){
-        List<String> sList = new ArrayList<>( 3);
-        for(int i = 0; i < inputNumber.length(); i ++){
+    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"123", "456", "158", "가나다"})
+    private boolean hasNotOneToNineNumber(String inputNumber) {
+        List< String > sList = new ArrayList<>( 3 );
+        for ( int i = 0; i < inputNumber.length(); i++ ) {
             String number = String.valueOf( inputNumber.charAt( i ) );
-            sList.add(number.matches( "^[1-9]" ) ? number : "fail");
+            sList.add( number.matches( "^[1-9]" ) ? number : "fail" );
         }
 
         boolean isHasFail = sList.contains( "fail" );
 
-        if(isHasFail){
-            System.out.println("1 ~ 9 까지의 유효한 숫자를 입력하세요.");
-            return false;
+        if ( isHasFail ) {
+            System.out.println( "1 ~ 9 까지의 유효한 숫자를 입력하세요." );
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    //중복 숫자 여부
+    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"123", "456", "158", "111"})
+    private boolean hasDuplicateNumber(String inputNumber){
+        String[] inputNumberArray = inputNumber.split("");
+        List<String> inputNumberList = new ArrayList<>(Arrays.asList( inputNumberArray ));
+        Set<String> inputNumberSet = new HashSet<>( inputNumberList);
+        if(inputNumberList.size() != inputNumberSet.size()){
+            System.out.println( "1 ~ 9 까지의 숫자 중 중복되지 않도록 입력해주세요." );
+            return true;
+        }
+        return false;
     }
 
     //각 자리별 번호 및 인덱스 추출
+    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"123", "456", "158", "가나다"})
     private void numberCompare( String inputNumber ){
         this.strike = 0;
         this.ball = 0;
@@ -93,6 +131,7 @@ public class Computer {
     }
 
     //자리별 번호 비교
+    @Test
     private void getIndexNumberCompare( Integer indexNumber, int userIndex ){
         for(int idx = 0; idx < this.question.size(); idx ++){
             this.compareWithQuestion( indexNumber, userIndex, new Integer( this.question.get( idx )), new Integer( idx) );
@@ -100,6 +139,7 @@ public class Computer {
     }
 
     //문제와 번호 비교
+    @Test
     private void compareWithQuestion( Integer indexNumber, Integer userIndex, Integer questionNumber, Integer questionIndex ){
         //번호가 일치하지 않을 경우 추가가 체크 필요하지 않음
         if(!indexNumber.equals( questionNumber )){
@@ -116,6 +156,7 @@ public class Computer {
     }
 
     // 게임 결과 텍스트 보기
+    @Test
     private void showResult(){
         this.makeResultText();
         if(!isEndGame){
@@ -132,24 +173,27 @@ public class Computer {
     }
 
     // 게임 결과 텍스트 생성
+    @Test
     private void makeResultText(){
         this.resultText = "";
 
         //3 스트라이크
         if(this.strike == 3){
             this.userWinSetting();
+            return;
         }
 
         //스트라이크가 없을 경우 컴퓨터 1승 추가
         this.userWrongSetting();
     }
 
+    @Test
     private void userWinSetting(){
         this.resultText = "3스트라이크\n3개의 숫자를 모두 맞히셨습니다! 게임 종료";
         this.isEndGame = true;
-        return;
     }
 
+    @Test
     private void userWrongSetting(){
         List<String> text = new ArrayList<>();
         //하나도 맞지 않았을 경우

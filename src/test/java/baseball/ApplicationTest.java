@@ -3,13 +3,14 @@ package baseball;
 import camp.nextstep.edu.missionutils.test.NsTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
+import java.util.*;
 
 import static camp.nextstep.edu.missionutils.test.Assertions.assertRandomNumberInRangeTest;
 import static camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class ApplicationTest extends NsTest {
     @Test
@@ -41,5 +42,27 @@ class ApplicationTest extends NsTest {
     void createQuestionTest(){
         Computer computer = new Computer();
         assertThat( computer.getQuestion() ).isNotNull().isInstanceOf( List.class ).hasSize( 3 );
+    }
+
+    @Test
+    @DisplayName( "3자리 수 이상 예외처리 확인" )
+    @ParameterizedTest
+    @ValueSource (strings = { "123", "456", "158", "가나다", "11111", "가가", "가"})
+    void checkStringSizeThree(String text){
+        assertThatExceptionOfType( IllegalArgumentException.class ).isThrownBy( ()->{
+            if(text.length() != 3){
+                throw new IllegalArgumentException("숫자 3자리만 입력해주세요.");
+            }
+        } ).withMessageMatching( "숫자 3자리만 입력해주세요." );
+    }
+
+    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"123", "456", "158", "111"})
+    void hasDuplicateNumber(String inputNumber){
+        String[] inputNumberArray = inputNumber.split("");
+        List<String> inputNumberList = new ArrayList<>(Arrays.asList( inputNumberArray ));
+        Set<String> inputNumberSet = new HashSet<>( inputNumberList);
+        assertThat(inputNumberList.size()).isEqualTo( 3 );
     }
 }
