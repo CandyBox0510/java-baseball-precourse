@@ -39,4 +39,12 @@ public class Computer {
     public int getWinCount() {
         return winCount;
     }
+
+    public void inputNumberResult(String inputNumber){
+        System.out.println("inputNumber : " + inputNumber);
+        if(inputNumber.length() != 3){
+            throw new IllegalArgumentException("숫자 3자리만 입력해주세요.");
+        }
+        this.winCount++;
+    }
 }
